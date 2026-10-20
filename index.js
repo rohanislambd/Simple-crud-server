@@ -59,9 +59,30 @@ app.get("/users/:id", async(req, res)=>{
 
 app.post('/users' , async(req, res)=>{
    const newUser = req.body;
-   console.log('Adding new user ', newUser);
+//    console.log('Adding new user ', newUser);
    const result = await users.insertOne(newUser);
    res.send(result)
+
+})
+
+app.patch('/users/:id', async(req, res) =>{
+   const id = req.params.id
+   const updateUser = req.body;
+   console.log(id, updateUser)
+
+   const filter = {_id: new ObjectId(id)};
+
+
+   const option = {upsert: true};
+   const updateDoc = {
+    $set: {
+        name:  updateUser.name,
+        email: updateUser.email,
+    }
+   }
+
+   const result = await users.updateOne(filter, updateDoc, option);
+   res.send(result );
 
 })
 
